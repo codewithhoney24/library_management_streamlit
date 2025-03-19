@@ -1,12 +1,8 @@
 import json
 import streamlit as st
-#import plotly.express as px
-# print(px.__version__)
-# exit()
 import random
-import streamlit as st
-st.set_page_config(page_title="Library Management", page_icon="📚", layout="wide")
 
+st.set_page_config(page_title="Library Management", page_icon="📚", layout="wide")
 
 # File to store books
 BOOKS_FILE = "books.json"
@@ -45,8 +41,6 @@ st.markdown(
         color: white !important;
         font-size: 40px !important;
         font-weight: bold;
-        
-
     }
     input, select {
         font-size: 28px !important;
@@ -61,8 +55,6 @@ st.markdown(
      font-size: 48px !important;
     }
 </style>
-
-
     """,
     unsafe_allow_html=True,
 )
@@ -93,7 +85,6 @@ def main():
     
     st.sidebar.markdown('<h2 style="color: black;">Navigation</h2>', unsafe_allow_html=True)
 
-    
     choice = st.sidebar.radio("Go to", [
         "📖 Add Book", 
         "📚 View Books", 
@@ -114,7 +105,6 @@ def main():
             add_book(title, author, genre, year)
             st.markdown('<p style="color: white; font-size: 38px;">🎉 Book added successfully!</p>', unsafe_allow_html=True)
 
-
     elif choice == "📚 View Books":
         st.markdown("<h3 style='color: white;'>📖 Your Library Collection</h3>", unsafe_allow_html=True)
 
@@ -122,7 +112,7 @@ def main():
         genre_filter = st.selectbox("📌 Filter by Genre", ["All"] + list(set(book["genre"] for book in books)))
         
         if books:
-            for book in books:
+            for idx, book in enumerate(books):  # Include the index as part of the key
                 if genre_filter == "All" or book["genre"] == genre_filter:
                     st.markdown(f"""
                         <div class='book-box'>
@@ -132,12 +122,12 @@ def main():
                         </div>
                     """, unsafe_allow_html=True)
                     
-                    if st.button(f"❌ Delete {book['title']}"):
+                    # Make the button key unique by combining the index
+                    if st.button(f"❌ Delete {book['title']}", key=f"delete_{idx}_{book['title']}"):
                         delete_book(book['title'])
                         st.warning(f"⚠️ {book['title']} deleted!")
         else:
            st.markdown('<p style="color: white; font-size: 18px;">🚀 No books found. Start adding some!</p>', unsafe_allow_html=True)
-
 
     elif choice == "🔍 Search Book":
         st.subheader("🔎 Search for a Book")
@@ -149,7 +139,6 @@ def main():
                     st.markdown(f"📘 **{book['title']}** - ✍️ {book['author']} ({book['year']}) - 📂 *{book['genre']}*")
             else:
               st.markdown('<p style="color: white; font-size: 18px;">⚠️ No matching books found.</p>', unsafe_allow_html=True)
-
 
     elif choice == "📝 Edit/Delete Book":
         st.subheader("✏️ Edit or ❌ Delete a Book")
@@ -166,11 +155,11 @@ def main():
                 new_genre = st.selectbox("📂 Genre", ["Fiction", "Non-Fiction", "Science", "History", "Biography", "Fantasy", "Others"], index=["Fiction", "Non-Fiction", "Science", "History", "Biography", "Fantasy", "Others"].index(book_data["genre"]))
                 new_year = st.number_input("📅 Year", min_value=1800, max_value=2025, step=1, value=book_data["year"])
                 
-                if st.button("✅ Update Book"):
+                if st.button("✅ Update Book", key=f"update_{selected_book}"):
                     edit_book(selected_book, new_title, new_author, new_genre, new_year)
                     st.markdown('<p style="color: white; font-size: 18px;">📖 Book updated successfully!</p>', unsafe_allow_html=True)
 
-                if st.button("❌ Delete Book"):
+                if st.button("❌ Delete Book", key=f"delete_{selected_book}"):
                     delete_book(selected_book)
                     st.markdown('<p style="color: white; font-size: 18px; background-color: rgba(255, 165, 0, 0.3); padding: 10px; border-radius: 5px;">⚠️ Book deleted!</p>', unsafe_allow_html=True)
 
@@ -183,13 +172,13 @@ def main():
         books = load_books()
         total_books = len(books)
         st.markdown(
-    f"""
-    <div style="background-color: #1e90ff; padding: 10px; border-radius: 5px;">
-        <p style="color: white; font-weight: bold; font-size: 24px;">📚 Total Books in Library: {total_books}</p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+            f"""
+            <div style="background-color: #1e90ff; padding: 10px; border-radius: 5px;">
+                <p style="color: white; font-weight: bold; font-size: 24px;">📚 Total Books in Library: {total_books}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     elif choice == "🎲 Random Recommendation":
         st.markdown('<h2 style="color: white;">📖 Your Random Book Recommendation</h2>', unsafe_allow_html=True)
@@ -197,19 +186,18 @@ def main():
         books = load_books()
         if books:
             book = random.choice(books)
-        st.markdown(
-    f"""
-    <div style="background-color: #28a745; padding: 12px; border-radius: 5px;">
-        <p style="color: white; font-weight: bold; font-size: 24px;">
-            📘 {book['title']} - ✍️ {book['author']} ({book['year']}) - 📂 <i>{book['genre']}</i>
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-    else:
-        st.markdown('<div style="background-color: #1e3c72; padding: 10px; border-radius: 5px; color: white;">🚀 No books available for recommendation.</div>', unsafe_allow_html=True)
-
+            st.markdown(
+                f"""
+                <div style="background-color: #28a745; padding: 12px; border-radius: 5px;">
+                    <p style="color: white; font-weight: bold; font-size: 24px;">
+                        📘 {book['title']} - ✍️ {book['author']} ({book['year']}) - 📂 <i>{book['genre']}</i>
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown('<div style="background-color: #1e3c72; padding: 10px; border-radius: 5px; color: white;">🚀 No books available for recommendation.</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
