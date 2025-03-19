@@ -1,7 +1,12 @@
 import json
 import streamlit as st
 import plotly.express as px
+# print(px.__version__)
+# exit()
 import random
+import streamlit as st
+st.set_page_config(page_title="Library Management", page_icon="📚", layout="wide")
+
 
 # File to store books
 BOOKS_FILE = "books.json"
@@ -40,6 +45,8 @@ st.markdown(
         color: white !important;
         font-size: 40px !important;
         font-weight: bold;
+        
+
     }
     input, select {
         font-size: 28px !important;
@@ -49,6 +56,9 @@ st.markdown(
         color: black !important;
         font-size: 62px !important;
         font-weight: bold;
+    }
+    choice,radio{
+     font-size: 48px !important;
     }
 </style>
 
@@ -106,7 +116,8 @@ def main():
 
 
     elif choice == "📚 View Books":
-        st.subheader("📖 Your Library Collection")
+        st.markdown("<h3 style='color: white;'>📖 Your Library Collection</h3>", unsafe_allow_html=True)
+
         books = load_books()
         genre_filter = st.selectbox("📌 Filter by Genre", ["All"] + list(set(book["genre"] for book in books)))
         
@@ -167,20 +178,37 @@ def main():
          st.markdown('<p style="color: white; font-size: 18px; background-color: rgba(255, 165, 0, 0.3); padding: 10px; border-radius: 5px;">🚀 No books available to edit or delete.</p>', unsafe_allow_html=True)
 
     elif choice == "📊 Statistics":
-        st.subheader("📊 Library Statistics")
+        st.markdown("<h3 style='color: white;'>📊 Library Statistics</h3>", unsafe_allow_html=True)
+
         books = load_books()
         total_books = len(books)
-        st.info(f"📚 **Total Books in Library:** {total_books}")
+        st.markdown(
+    f"""
+    <div style="background-color: #1e90ff; padding: 10px; border-radius: 5px;">
+        <p style="color: white; font-weight: bold; font-size: 24px;">📚 Total Books in Library: {total_books}</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
     elif choice == "🎲 Random Recommendation":
-        st.markdown('<h3 style="color: white;">📖 Your Random Book Recommendation</h3>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color: white;">📖 Your Random Book Recommendation</h2>', unsafe_allow_html=True)
 
         books = load_books()
         if books:
             book = random.choice(books)
-            st.success(f"📘 **{book['title']}** - ✍️ {book['author']} ({book['year']}) - 📂 *{book['genre']}*")
-        else:
-          st.markdown('<div style="background-color: #1e3c72; padding: 10px; border-radius: 5px; color: white;">🚀 No books available for recommendation.</div>', unsafe_allow_html=True)
+        st.markdown(
+    f"""
+    <div style="background-color: #28a745; padding: 12px; border-radius: 5px;">
+        <p style="color: white; font-weight: bold; font-size: 24px;">
+            📘 {book['title']} - ✍️ {book['author']} ({book['year']}) - 📂 <i>{book['genre']}</i>
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+    else:
+        st.markdown('<div style="background-color: #1e3c72; padding: 10px; border-radius: 5px; color: white;">🚀 No books available for recommendation.</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
