@@ -1,6 +1,8 @@
 import json
 import streamlit as st
 import plotly.express as px
+# print(px.__version__)
+# exit()
 import random
 
 # File to store books
