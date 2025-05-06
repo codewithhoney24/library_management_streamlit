@@ -80,20 +80,18 @@ def search_books(query):
     books = load_books()
     return [book for book in books if query.lower() in book["title"].lower() or query.lower() in book["author"].lower()]
 
+import streamlit as st
+
 def main():
     st.title("📚 Personal Library Manager")
     
+    # Custom-styled label for the radio group
     st.sidebar.markdown('<h2 style="color: black;">Navigation</h2>', unsafe_allow_html=True)
 
-    st.markdown("""
-    <style>
-    .css-1v0mbdj.edgvbvh3 {
-        color: black !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # Use an empty label for radio and insert custom label separately
+    st.sidebar.markdown('<label style="color: black; font-weight: bold;">Go to</label>', unsafe_allow_html=True)
 
-    choice = st.sidebar.radio("Go to", [
+    choice = st.sidebar.radio("", [
         "📖 Add Book", 
         "📚 View Books", 
         "🔍 Search Book", 
@@ -101,6 +99,9 @@ def main():
         "📊 Statistics", 
         "🎲 Random Recommendation"
     ])
+
+    st.write(f"You selected: {choice}")
+
     
     if choice == "📖 Add Book":
         st.subheader("✨ Add a New Book to Your Library")
