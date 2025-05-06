@@ -85,6 +85,14 @@ def main():
     
     st.sidebar.markdown('<h2 style="color: black;">Navigation</h2>', unsafe_allow_html=True)
 
+    st.markdown("""
+    <style>
+    .css-1v0mbdj.edgvbvh3 {
+        color: black !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     choice = st.sidebar.radio("Go to", [
         "📖 Add Book", 
         "📚 View Books", 
