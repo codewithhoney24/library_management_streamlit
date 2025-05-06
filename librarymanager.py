@@ -46,9 +46,9 @@ st.markdown(
         font-size: 28px !important;
     }
       /* Navigation Heading */
-    .stSidebar h2 {
+    .stSidebar h3 {
         color: black !important;
-        font-size: 62px !important;
+        font-size: 42px !important;
         font-weight: bold;
     }
     choice,radio{
